@@ -3,7 +3,7 @@
 Summary:	JavaScript & Flash Upload Library
 Name:		js-%{plugin}
 Version:	2.2.0.1
-Release:	0.2
+Release:	0.3
 License:	MIT
 Group:		Applications/WWW
 Source0:	https://swfupload.googlecode.com/files/SWFUpload%20v%{version}%20Core.zip?/SWFUpload_v%{version}_Core.zip
@@ -12,6 +12,7 @@ Source1:	apache.conf
 Source2:	lighttpd.conf
 URL:		https://code.google.com/p/swfupload/
 BuildRequires:	unzip
+BuildRequires:	rpmbuild(macros) >= 1.553
 Requires:	webapps
 Requires:	webserver(alias)
 BuildArch:	noarch
@@ -48,6 +49,8 @@ mv 'SWFUpload v2.2.0.1 Core'/* .
 
 mv 'Core Changelog.txt' Changelog.txt
 mv 'swfupload license.txt' license.txt
+
+%undos -f js
 
 %install
 rm -rf $RPM_BUILD_ROOT

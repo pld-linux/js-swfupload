@@ -3,7 +3,7 @@
 Summary:	JavaScript & Flash Upload Library
 Name:		js-%{plugin}
 Version:	2.2.0.1
-Release:	0.6
+Release:	1
 License:	MIT
 Group:		Applications/WWW
 Source0:	https://swfupload.googlecode.com/files/SWFUpload%20v%{version}%20Core.zip?/SWFUpload_v%{version}_Core.zip

@@ -3,7 +3,7 @@
 Summary:	JavaScript & Flash Upload Library
 Name:		js-%{plugin}
 Version:	2.2.0.1
-Release:	0.3
+Release:	0.6
 License:	MIT
 Group:		Applications/WWW
 Source0:	https://swfupload.googlecode.com/files/SWFUpload%20v%{version}%20Core.zip?/SWFUpload_v%{version}_Core.zip
@@ -11,8 +11,10 @@ Source0:	https://swfupload.googlecode.com/files/SWFUpload%20v%{version}%20Core.z
 Source1:	apache.conf
 Source2:	lighttpd.conf
 URL:		https://code.google.com/p/swfupload/
-BuildRequires:	unzip
+BuildRequires:	closure-compiler
+BuildRequires:	js
 BuildRequires:	rpmbuild(macros) >= 1.553
+BuildRequires:	unzip
 Requires:	webapps
 Requires:	webserver(alias)
 BuildArch:	noarch
@@ -52,12 +54,28 @@ mv 'swfupload license.txt' license.txt
 
 %undos -f js
 
+%build
+install -d build
+
+# compress .js
+for js in *.js; do
+	out=build/${js#*/}
+%if 0%{!?debug:1}
+	closure-compiler --js $js --charset UTF-8 --js_output_file $out
+	js -C -f $out
+%else
+	cp -p $js $out
+%endif
+done
+
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_appdir}
 
+cp -p build/%{plugin}.js $RPM_BUILD_ROOT%{_appdir}/%{plugin}-%{version}.min.js
 cp -p %{plugin}.js $RPM_BUILD_ROOT%{_appdir}/%{plugin}-%{version}.js
-ln -s %{plugin}-%{version}.js $RPM_BUILD_ROOT%{_appdir}/%{plugin}.js
+ln -s %{plugin}-%{version}.js $RPM_BUILD_ROOT%{_appdir}/%{plugin}.src.js
+ln -s %{plugin}-%{version}.min.js $RPM_BUILD_ROOT%{_appdir}/%{plugin}.js
 
 install -d $RPM_BUILD_ROOT%{_sysconfdir}
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf

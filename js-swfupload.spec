@@ -3,14 +3,13 @@
 Summary:	JavaScript & Flash Upload Library
 Name:		js-%{plugin}
 Version:	2.2.0.1
-Release:	2
+Release:	1
 License:	MIT
 Group:		Applications/WWW
 Source0:	https://swfupload.googlecode.com/files/SWFUpload%20v%{version}%20Core.zip?/SWFUpload_v%{version}_Core.zip
 # Source0-md5:	1bf14f5a7a9a3ecc529378ee50f0c59b
 Source1:	apache.conf
 Source2:	lighttpd.conf
-Source3:	httpd.conf
 URL:		https://code.google.com/p/swfupload/
 BuildRequires:	closure-compiler
 BuildRequires:	js
@@ -18,7 +17,6 @@ BuildRequires:	rpmbuild(macros) >= 1.553
 BuildRequires:	unzip
 Requires:	webapps
 Requires:	webserver(alias)
-Conflicts:	apache-base < 2.4.0-1
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -82,7 +80,7 @@ ln -s %{plugin}-%{version}.min.js $RPM_BUILD_ROOT%{_appdir}/%{plugin}.js
 install -d $RPM_BUILD_ROOT%{_sysconfdir}
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
 cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/lighttpd.conf
-cp -p %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/httpd.conf
+cp -p $RPM_BUILD_ROOT%{_sysconfdir}/{apache,httpd}.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -93,10 +91,10 @@ rm -rf $RPM_BUILD_ROOT
 %triggerun -- apache1 < 1.3.37-3, apache1-base
 %webapp_unregister apache %{_webapp}
 
-%triggerin -- apache-base
+%triggerin -- apache < 2.2.0, apache-base
 %webapp_register httpd %{_webapp}
 
-%triggerun -- apache-base
+%triggerun -- apache < 2.2.0, apache-base
 %webapp_unregister httpd %{_webapp}
 
 %triggerin -- lighttpd
